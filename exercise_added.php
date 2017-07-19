@@ -12,25 +12,48 @@
 
     if( $_name != "" && $_primary != "" && $_secondary != "" ){
 
-      require 'sqlConnect.php';
-      $createTable="CREATE TABLE IF NOT EXISTS exercise (
-  			name TEXT primary key not null,
+      require 'mysql_connection.php';
+      if (!$dbc) {
+        die("Connection failed: " . mysqli_connect_error());
+      } else {
+        echo "Connected successfully\n";
+      }
+
+      $createTable="CREATE TABLE IF NOT EXISTS mytable (
+  			name TEXT,
         primaryPart TEXT,
 	      secondaryPart TEXT,
 	      lastDone DATETIME,
 	      bilateral INTEGER,
 	      equipment TEXT)";
-      if(!mysql_query($createTable)) { // Show alert if error
-        echo "Error creating table";
+
+        echo "hi";
+        $result = mysqli_query($dbc, $createTable) ;
+
+      if(!$result) { // Show alert if error
+        echo "Error creating table" . mysqli_error($dbc);
+        exit();
+      } else {
+        echo "all good";
       }
 
-      $query = "INSERT INTO exercise (name, primaryPart, secondaryPart, lastDone, bilateral, equipment)
-      VALUES ($_name, $_primary, $_secondary, NOW(), $_lateral, $_equipment)";
+      $query = "INSERT INTO mytable (name, primaryPart, secondaryPart, lastDone, bilateral, equipment)
+      VALUES ('$_name', '$_primary', '$_secondary', NOW(), '$_lateral', '$_equipment')";
 
-      $insert = mysqli_query( $query);
+      $insert = mysqli_query($dbc, $query);
+      echo "yay";
       if(!$insert){
-        echo mysqli_error();
+        echo "shit";
+        echo mysqli_error($dbc);
+      } else {
+        echo "query success\n";
+        echo "  has" . mysqli_affected_rows($dbc) . "rows  ";
       }
+
+$result = mysqli_query($dbc, "SELECT * FROM mytable");
+$rows = mysqli_fetch_row($result);
+print_r($rows);
+
       mysqli_close($dbc);
 
     } else {
