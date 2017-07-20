@@ -15,8 +15,6 @@
       require 'mysql_connection.php';
       if (!$dbc) {
         die("Connection failed: " . mysqli_connect_error());
-      } else {
-        echo "Connected successfully\n";
       }
 
       $createTable="CREATE TABLE IF NOT EXISTS mytable (
@@ -26,33 +24,26 @@
 	      lastDone DATETIME,
 	      bilateral INTEGER,
 	      equipment TEXT)";
+      $result = mysqli_query($dbc, $createTable) ;
 
-        echo "hi";
-        $result = mysqli_query($dbc, $createTable) ;
-
-      if(!$result) { // Show alert if error
-        echo "Error creating table" . mysqli_error($dbc);
-        exit();
-      } else {
-        echo "all good";
+      if(!$result) {
+        die("Error creating table. " . mysqli_error($dbc));
       }
 
       $query = "INSERT INTO mytable (name, primaryPart, secondaryPart, lastDone, bilateral, equipment)
       VALUES ('$_name', '$_primary', '$_secondary', NOW(), '$_lateral', '$_equipment')";
 
       $insert = mysqli_query($dbc, $query);
-      echo "yay";
       if(!$insert){
-        echo "shit";
         echo mysqli_error($dbc);
-      } else {
-        echo "query success\n";
-        echo "  has" . mysqli_affected_rows($dbc) . "rows  ";
       }
 
-$result = mysqli_query($dbc, "SELECT * FROM mytable");
-$rows = mysqli_fetch_row($result);
-print_r($rows);
+
+      $result = mysqli_query($dbc, "SELECT * FROM mytable");
+      while ($row = mysqli_fetch_assoc($result)) {
+        print_r($row);
+        echo "<br/>";
+      }
 
       mysqli_close($dbc);
 
