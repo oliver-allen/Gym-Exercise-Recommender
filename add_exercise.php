@@ -58,7 +58,7 @@
       </p>
       <p>
         <input type="submit" value="submit" name="submit" onclick="return checkEntry()"/>
-        <input type="button" value="Back" onclick="window.location = 'index.php'"/>
+        <input type="button" value="Back" onclick="window.location = 'index.php'" />
       </p>
     </form>
   </div>
