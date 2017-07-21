@@ -19,17 +19,17 @@
 			name TEXT,
       primaryPart TEXT,
       secondaryPart TEXT,
-      lastDone DATETIME,
       bilateral INTEGER,
-      equipment TEXT)";
+      equipment TEXT,
+      lastDone DATETIME)";
     $result = mysqli_query($dbc, $createTable) ;
 
     if(!$result) {
       die("Error creating table. " . mysqli_error($dbc));
     }
-    echo "$_name, $_primary, $_secondary, NOW(), $_lateral, $_equipment";
-    $query = "INSERT INTO $table (name, primaryPart, secondaryPart, lastDone, bilateral, equipment)
-    VALUES ('$_name', '$_primary', '$_secondary', NOW(), '$_lateral', '$_equipment')";
+    echo "$_name, $_primary, $_secondary, $_lateral, $_equipment, NOW()";
+    $query = "INSERT INTO $table (name, primaryPart, secondaryPart, bilateral, equipment, lastDone)
+    VALUES ('$_name', '$_primary', '$_secondary', '$_lateral', '$_equipment', NOW())";
 
     $insert = mysqli_query($dbc, $query);
     if(!$insert){
