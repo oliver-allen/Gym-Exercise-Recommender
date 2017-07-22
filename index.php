@@ -17,12 +17,16 @@
       <input type="button" value="Add Excercise" onclick="window.location = 'add_exercise.php'" />
       <input type="button" value="Update Excercise" onclick="window.location = 'update.php'" />
     </div>
-    <div class="results"
-    <table border="1" id="resultTable">
-      <tr>
-        <th>Name</th><th>Primary</th><th>Secondary</th><th>Bilateral</th><th>Equipment</th>
-      </tr>
-      <?php
+    <div class="results">
+      <table border="1" id="resultTable">
+        <tr>
+          <th>Name</th><th>Primary</th><th>Secondary</th><th>Bilateral</th><th>Equipment</th>
+        </tr>
+        <?php
+          require 'ai.php';
+         ?>
+       </table>
+     </div>
   </div>
 
 </body>
