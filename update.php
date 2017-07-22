@@ -47,7 +47,7 @@
             }
 
             while ($row = mysqli_fetch_array($entries, MYSQLI_NUM)) {
-              echo "<tr><td><input type='checkbox' name='check' /></td>";
+              echo "<tr><td class='centre'><input type='checkbox' name='check' value='$row[0]'/></td>";
               for($i=0; $i<count($row)-1; $i++){
                 echo "<td>" . $row[$i] . "</td>";
               }
