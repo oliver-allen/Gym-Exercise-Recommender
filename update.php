@@ -47,7 +47,7 @@
             }
 
             while ($row = mysqli_fetch_array($entries, MYSQLI_NUM)) {
-              echo "<tr><td class='centre'><input type='checkbox' name='check' value='$row[0]'/></td>";
+              echo "<tr><td class='centre'><input type='checkbox' name='check[]' value='$row[0]'/></td>";
               for($i=0; $i<count($row)-1; $i++){
                 echo "<td>" . $row[$i] . "</td>";
               }
@@ -55,11 +55,10 @@
             }
 
             mysqli_close($dbc);
-            //create table of all
            ?>
 
          </table>
-         <input type="submit" value="Update" name="update" />
+         <input type="submit" value="Update" name="submit" />
          <input type="button" value="Back" onclick="window.location = 'index.php'" />
       </form>
     </div>
