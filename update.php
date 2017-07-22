@@ -5,7 +5,7 @@
       function filter(){
         var input = document.getElementById("searchBar");
         var filter = input.value.toUpperCase();
-        var table = document.getElementById("myTable");
+        var table = document.getElementById("exerciseTable");
         var tr = table.getElementsByTagName("tr");
         var td;
         // Loop through all table rows, and hide those who don't match the search query
@@ -28,9 +28,9 @@
     <div id="search">
       <input type="text" id="searchBar" onkeyup="filter()" placeholder="Search for exercises...">
     </div>
-    <div id="results">
+    <div class="results">
       <form action="process.php" method="post">
-        <table border="1" id="myTable">
+        <table border="1" id="exerciseTable">
           <tr>
             <th>Select</th><th>Name</th><th>Primary</th><th>Secondary</th><th>Bilateral</th><th>Equipment</th>
           </tr>

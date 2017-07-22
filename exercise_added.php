@@ -1,4 +1,6 @@
 <html>
+<head>
+</head>
 <body>
 
   <?php
@@ -39,14 +41,12 @@
     if(!$entries) {
       die("Error select all. " . mysqli_error($dbc));
     }
-    while ($row = mysqli_fetch_assoc($entries)) {
-      print_r($row);
-      echo "<br/>";
-    }
 
     mysqli_close($dbc);
 
-    header( 'Location: list.html' );
+    $message = "Exercise $_name was added successfully";
+    echo "<script>window.location.href = 'index.php?status=$message';</script>";
+    //header( 'Location: index.php' );
 
   } else {
     echo "Something wrong. Exercise added not through submit";

@@ -18,9 +18,15 @@ if(isset($_POST['submit'])){
     if(!$update) {
       die("Error select all. " . mysqli_error($dbc));
     }
-    echo "updated";
-
     mysqli_close($dbc);
+
+    $message = "$checked[0]";
+    for($i=1; $i<count($checked); $i++){
+      $message = $message . ", $checked[$i]";
+    }
+    $message = $message . " was updated successfully";
+    header( "Location: index.php?status=$message" );
+
   } else {
     echo "Nothing selected";
   }
