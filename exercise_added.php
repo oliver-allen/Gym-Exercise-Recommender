@@ -9,7 +9,6 @@
     $_name = $_POST['name'];
     $_primary = $_POST['primary'];
     $_secondary = $_POST['secondary'];
-    $_lateral = (array_key_exists('lateral',$_POST)) ? "True" : "False";
     $_equipment = $_POST['equipment'];
 
     require 'mysql_connection.php';
@@ -21,7 +20,6 @@
 			name VARCHAR(50) primary key not null,
       primaryPart TEXT,
       secondaryPart TEXT,
-      bilateral TEXT,
       equipment TEXT,
       lastDone DATETIME)";
     $result = mysqli_query($dbc, $createTable) ;
@@ -29,8 +27,8 @@
     if(!$result) {
       die("Error creating table. " . mysqli_error($dbc));
     }
-    $query = "INSERT INTO $table (name, primaryPart, secondaryPart, bilateral, equipment, lastDone)
-    VALUES ('$_name', '$_primary', '$_secondary', '$_lateral', '$_equipment', NOW())";
+    $query = "INSERT INTO $table (name, primaryPart, secondaryPart, equipment, lastDone)
+    VALUES ('$_name', '$_primary', '$_secondary', '$_equipment', NOW())";
 
     $insert = mysqli_query($dbc, $query);
     if(!$insert){

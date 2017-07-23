@@ -20,7 +20,7 @@
     <div class="results">
       <table border="1" id="resultTable">
         <tr>
-          <th>Name</th><th>Primary</th><th>Secondary</th><th>Bilateral</th><th>Equipment</th>
+          <th>Name</th><th>Primary</th><th>Secondary</th><th>Equipment</th>
         </tr>
         <?php
           require 'ai.php';

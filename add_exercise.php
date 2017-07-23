@@ -43,9 +43,6 @@
            ?>
         </select>
       </p>
-      <p>Unilateral Exercise:
-        <input type="checkbox" name="lateral"/>
-      </p>
       <p>Equipment:
         <select name ="equipment">
           <?php

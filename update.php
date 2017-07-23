@@ -32,7 +32,7 @@
       <form action="process.php" method="post">
         <table border="1" id="exerciseTable">
           <tr>
-            <th>Select</th><th>Name</th><th>Primary</th><th>Secondary</th><th>Bilateral</th><th>Equipment</th>
+            <th>Select</th><th>Name</th><th>Primary</th><th>Secondary</th><th>Equipment</th>
           </tr>
           <?php
 
