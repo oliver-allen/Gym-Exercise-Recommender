@@ -1,12 +1,30 @@
+<!--
+Decide exercises to recommend.
+  Embedded in a table in index.php
+!-->
 <?php
 
   //order of last done desending based on day only.
   //order dumbell/barbell used most (bilateral)
   //equipment type
 
+  //Database connection
   require 'mysql_connection.php';
   if (!$dbc) {
     die("Connection failed: " . mysqli_connect_error());
+  }
+
+  //Create table if doesn't exist
+  $createTable="CREATE TABLE IF NOT EXISTS $table (
+    name VARCHAR(50) primary key not null,
+    primaryPart TEXT,
+    secondaryPart TEXT,
+    equipment TEXT,
+    lastDone DATETIME)";
+  $result = mysqli_query($dbc, $createTable) ;
+
+  if(!$result) {
+    die("Error creating table. " . mysqli_error($dbc));
   }
 
   $entries = mysqli_query($dbc, "SELECT * FROM $table ORDER BY lastDone ASC");
@@ -19,18 +37,18 @@
   if(!$sql) {
     die("Error select all. " . mysqli_error($dbc));
   }
-  equipment($sql);
+
+  //equipment($sql);
 
 
-
-
-  /*while ($row = mysqli_fetch_array($entries, MYSQLI_NUM)) {
+  //Print middle of table for recommended exercises
+  while ($row = mysqli_fetch_array($entries, MYSQLI_NUM)) {
     echo "<tr>";
     for($i=0; $i<count($row)-1; $i++){
       echo "<td>" . $row[$i] . "</td>";
     }
     echo "</tr>";
-  }*/
+  }
 
   mysqli_close($dbc);
 
@@ -55,7 +73,7 @@
 
     //Find difference between now and each entry. Multiply that equipment type by diff and add to array.
 
-    
+
     //$array = mysqli_fetch_assoc($data);
     //print_r($array);
   }

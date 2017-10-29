@@ -1,6 +1,13 @@
+<!--
+Update when exercise was last done and persist in database.
+  Contains an submit and back button and has list of exercises with tickbox.
+  Uses process.php, index.php
+!-->
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <!-- Filter table rows from searchbar! -->
     <script>
       function filter(){
         var input = document.getElementById("searchBar");
@@ -25,27 +32,32 @@
 <body>
 
   <div id="container">
+
     <div id="search">
       <input type="text" id="searchBar" onkeyup="filter()" placeholder="Search for exercises...">
     </div>
+
     <div class="results">
       <form action="process.php" method="post">
         <table border="1" id="exerciseTable">
           <tr>
             <th>Select</th><th>Name</th><th>Primary</th><th>Secondary</th><th>Equipment</th>
           </tr>
-          <?php
 
+          <?php
+          //Database connection
             require 'mysql_connection.php';
             if (!$dbc) {
               die("Connection failed: " . mysqli_connect_error());
             }
 
+            //Database get all exercises query
             $entries = mysqli_query($dbc, "SELECT * FROM $table");
             if(!$entries) {
               die("Error select all. " . mysqli_error($dbc));
             }
 
+            //Add all exercises to table
             while ($row = mysqli_fetch_array($entries, MYSQLI_NUM)) {
               echo "<tr><td class='centre'><input type='checkbox' name='check[]' value='$row[0]'/></td>";
               for($i=0; $i<count($row)-1; $i++){
@@ -58,6 +70,7 @@
            ?>
 
          </table>
+
          <input type="submit" value="Update" name="submit" />
          <input type="button" value="Back" onclick="window.location = 'index.php'" />
       </form>

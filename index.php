@@ -1,6 +1,13 @@
+<!--
+Homepage of application.
+  Contains an add exercise and update button and shows a table of recommended exercises.
+  Uses add_exercise.php, update.php and ai.php
+!-->
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <!--Popup saying exercise was added successfully!-->
     <script>
       function popup(){
         var status = "<?php echo $_GET["status"]; ?>";
@@ -9,6 +16,7 @@
         }
       }
     </script>
+
 </head>
 <body onload="popup()">
 
