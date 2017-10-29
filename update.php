@@ -7,7 +7,7 @@ Update when exercise was last done and persist in database.
 <head>
     <link rel="stylesheet" type="text/css" href="style.css" />
 
-    <!-- Filter table rows from searchbar! -->
+    <!-- Filter table rows from searchbar !-->
     <script>
       function filter(){
         var input = document.getElementById("searchBar");

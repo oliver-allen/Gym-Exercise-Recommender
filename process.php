@@ -35,7 +35,7 @@ if(isset($_POST['submit'])){
     }
     //message to sent back to index.php
     $message = $message . " was updated successfully";
-    header( "Location: index.php?status=$message" );
+    echo "<script>window.location.href = 'index.php?status=$message';</script>";
 
   } else {
     echo "Nothing selected";

@@ -9,6 +9,7 @@ Add exercise to the database.
     $_primary = $_POST['primary'];
     $_secondary = $_POST['secondary'];
     $_equipment = $_POST['equipment'];
+    $message = "";
 
     //Database connection
     require 'mysql_connection.php';
@@ -22,15 +23,16 @@ Add exercise to the database.
 
     $insert = mysqli_query($dbc, $query);
     if(!$insert){
-      die("Error inserting to database. " . mysqli_error($dbc));
+      $message = $_name . " already exists";
+      //die("Error inserting to database. " . mysqli_error($dbc));
     }
-
     mysqli_close($dbc);
 
     //Redirect to index.php and transfer status
-    $message = "Exercise $_name was added successfully";
+    if(empty($message)){
+      $message = "Exercise $_name was added successfully";
+    }
     echo "<script>window.location.href = 'index.php?status=$message';</script>";
-    //header( 'Location: index.php' );
 
   } else {
     echo "Something wrong. Exercise added not through submit";
