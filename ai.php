@@ -33,13 +33,14 @@ Decide exercises to recommend.
   }
 
   //filter based on equipment used over the last 7 days, recent has more weighting
-  $sql = mysqli_query($dbc, "SELECT equipment, lastDone FROM exercise WHERE lastDone >= NOW() - INTERVAL 7 DAY");
+  $sql = mysqli_query($dbc, "SELECT equipment, lastDone FROM $table WHERE lastDone >= NOW() - INTERVAL 7 DAY");
   if(!$sql) {
     die("Error select all. " . mysqli_error($dbc));
   }
 
-  //equipment($sql);
-
+  //Order based on equipment used from last 7 days
+  $equipmentScore = equipment($sql);
+  print_r($equipmentScore);
 
   //Print middle of table for recommended exercises
   while ($row = mysqli_fetch_array($entries, MYSQLI_NUM)) {
@@ -54,27 +55,40 @@ Decide exercises to recommend.
 
 
 
-
-
   function equipment($data){
 
     $equipment = file("equipment.txt");
-    $array = array();
+    //Remove special characters from equipment list
+    foreach ($equipment as $key => $value) {
+      $equipment[$key] = preg_replace('/[^A-Za-z0-9\-]/', '', $value);
+    }
+    //Initialise arrays
+    $count = array();
+    $days = array();
+    $score = array();
     foreach ($equipment as $equip) {
-      $array[$equip] = 0;
+      $count[$equip] = 0;
+      $days[$equip] = 0;
+      $score[$equip] = 0;
     }
-    $now = DateTime(date("Y-m-d H:i:s"));
-    echo "Time = $now now </br>";
+    //Current time
+    $now = new DateTime(date("Y-m-d H:i:s"));
+
+    //Find difference between now and each entry and count to arrays
     while ($row = mysqli_fetch_assoc($data)) {
-      $date = $row['lastDone'];
-      echo $now->diff($date)->format('%a');
+      $date = new DateTime($row['lastDone']);
+      $type = $row['equipment'];
+      $count[preg_replace('/[^A-Za-z0-9\-]/', '', $type)] += 1;
+      $days[preg_replace('/[^A-Za-z0-9\-]/', '', $type)] += $now->diff($date)->format('%d');
     }
 
+    //Determine a score for each equip
+    foreach ($equipment as $equip) {
+      if($count[$equip] != 0){
+        $score[$equip] = round($days[$equip] / $count[$equip] + $count[$equip]);
+      }
+    }
+    return $score;
 
-    //Find difference between now and each entry. Multiply that equipment type by diff and add to array.
-
-
-    //$array = mysqli_fetch_assoc($data);
-    //print_r($array);
   }
  ?>
