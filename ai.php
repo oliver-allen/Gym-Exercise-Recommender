@@ -4,9 +4,10 @@ Decide exercises to recommend.
 !-->
 <?php
 
-  //order of last done desending based on day only.
-  //order dumbell/barbell used most (bilateral)
-  //equipment type
+  //Score last done desending based on day only.
+  //Score bilateral by round(days / count + count)
+  //Score equipment by round(days / count + count)
+
 
   //Database connection
   require 'mysql_connection.php';
@@ -60,6 +61,9 @@ Decide exercises to recommend.
   $equipmentScore = equipment($subset);
   print_r($equipmentScore);
 
+  //Create score for bilateral based on subset of exercises
+  $bilateralScore = bilateral($subset);
+  print_r($bilateralScore);
 /*
   $dayBuckets = array();
   $now = new DateTime(date("Y-m-d H:i:s"));
@@ -126,6 +130,39 @@ Decide exercises to recommend.
     }
 
     return $score;
+  }
 
+  function bilateral($subset){
+    //Initialise arrays
+    $count = array('bilateral' => 0, 'unilateral' => 0 );
+    $days = array('bilateral' => 0, 'unilateral' => 0 );
+    $score = array('bilateral' => 0, 'unilateral' => 0 );
+
+    //Add count for type and days.
+    foreach ($subset as $row) {
+      $daysAgo = $row['score'];
+      $bilateral = $row['bilateral'];
+      $count[$bilateral ? 'bilateral' : 'unilateral'] += 1;
+      $days[$bilateral ? 'bilateral' : 'unilateral'] += $daysAgo;
+    }
+
+    //Determine a score for each type
+    $max = 0;
+    foreach (array_keys($count) as $type) {
+      if($count[$type] != 0){
+        $score[$type] = round($days[$type] / $count[$type] + $count[$type]);
+        //Update max score
+        if($score[$type] > $max){
+          $max = $score[$type];
+        }
+      }
+    }
+
+    //Invert scores
+    foreach (array_keys($count) as $type) {
+        $score[$type] = $max - $score[$type];
+    }
+
+    return $score;
   }
  ?>
