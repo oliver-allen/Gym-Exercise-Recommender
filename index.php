@@ -10,7 +10,11 @@ Homepage of application.
     <!--Popup saying exercise was added successfully!-->
     <script>
       function popup(){
-        var status = "<?php echo $_GET["status"]; ?>";
+        var status = "<?php
+          if(array_key_exists('status',$_GET)){
+          echo $_GET["status"];
+          }
+        ?>";
         if(status != ""){
           alert(status);
         }
@@ -28,7 +32,7 @@ Homepage of application.
     <div class="results">
       <table border="1" id="resultTable">
         <tr>
-          <th>Name</th><th>Primary</th><th>Secondary</th><th>Equipment</th>
+          <th>Name</th><th>Primary</th><th>Secondary</th><th>Equipment</th><th>Bilateral</th><th>Score</th>
         </tr>
         <?php
           require 'ai.php';

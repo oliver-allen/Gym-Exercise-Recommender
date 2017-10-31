@@ -5,9 +5,10 @@ Decide exercises to recommend.
 <?php
 
   //Score last done desending based on day only.
-  //Score bilateral by round(days / count + count)
-  //Score equipment by round(days / count + count)
-
+  //Score bilateral by formula using days / count
+  //Score equipment by formula using days / count
+  //Score muscleGroupPrimary by formula using days / count
+  //Score muscleGroupSecondary by formula using days / count
 
   //Database connection
   require 'mysql_connection.php';
@@ -21,8 +22,8 @@ Decide exercises to recommend.
     primaryPart TEXT,
     secondaryPart TEXT,
     equipment TEXT,
-    lastDone DATETIME,
-    bilateral TINYINT(1))";
+    bilateral TINYINT(1),
+    lastDone DATETIME )";
   $result = mysqli_query($dbc, $createTable) ;
 
   if(!$result) {
@@ -34,12 +35,6 @@ Decide exercises to recommend.
     die("Error select all. " . mysqli_error($dbc));
   }
 
-  //filter based on equipment used over the last 7 days, recent has more weighting
-  $sql = mysqli_query($dbc, "SELECT equipment, lastDone FROM $table WHERE lastDone >= NOW() - INTERVAL 7 DAY");
-  if(!$sql) {
-    die("Error select all. " . mysqli_error($dbc));
-  }
-
   //Create score and set to number of days since exercise done.
   $exercises = array();
   $now = new DateTime(date("Y-m-d H:i:s"));
@@ -47,6 +42,7 @@ Decide exercises to recommend.
     $date = new DateTime($row['lastDone']);
     $dif = $now->diff($date)->format('%a');
     $row['score'] = $dif;
+    $row['bilateral'] = $row['bilateral'] ? 'YES' : 'NO';
     //Add exercises to array.
     array_push($exercises, $row);
   }
@@ -58,81 +54,100 @@ Decide exercises to recommend.
   }
 
   //Create score for equipment based on subset of exercises.
-  $equipmentScore = equipment($subset);
-  print_r($equipmentScore);
-
+  $equipmentScore = getScore($subset, "equipment.txt", 'equipment');
+  //Create score for primary muscles based on subset of exercises.
+  $primaryMuscleScore = getScore($subset, "muscles.txt", 'primaryPart');
+  //Create score for primary muscles based on subset of exercises.
+  $secondaryMuscleScore = getScore($subset, "muscles.txt", 'secondaryPart');
   //Create score for bilateral based on subset of exercises
   $bilateralScore = bilateral($subset);
-  print_r($bilateralScore);
-/*
-  $dayBuckets = array();
-  $now = new DateTime(date("Y-m-d H:i:s"));
+
+  //Apply the different type of scores to each exercise score value.
+  foreach ($exercises as $key => $exercise) {
+    $score = $exercise['score'];
+    $score += $bilateralScore[$exercise['bilateral'] == 'YES' ? 'bilateral' : 'unilateral'];
+    $score += $equipmentScore[$exercise['equipment']];
+    $score += $secondaryMuscleScore[$exercise['secondaryPart']];
+    $score += $primaryMuscleScore[$exercise['primaryPart']];
+    $exercise['score'] = $score;
+    $exercises[$key] = $exercise;
+  }
+  //Sort exercises by score biggest to smallest
+  usort($exercises, "cmp");
+
   //Print middle of table for recommended exercises
-    while ($row = mysqli_fetch_assoc($entries)) {
-    $date = new DateTime($row['lastDone']);
-    $dif = $now->diff($date)->format('%d');
-    if(!array_key_exists($dif, $dayBuckets)){
-      $dayBuckets[$dif] = array();
-    }
-    array_push($dayBuckets[$dif], $row);
+  foreach ($exercises as $exercise) {
+    $values = array_values($exercise);
     echo "<tr>";
-    for($i=0; $i<count($row)-1; $i++){
-      echo "<td>" . $row[$i] . "</td>";
+    for($i=0; $i<count($values)-2; $i++){
+      echo "<td>" . $values[$i] . "</td>";
     }
+    //Add score column
+    echo "<td>" . $values[$i+1] . "</td>";
     echo "</tr>";
   }
-  print_r($dayBuckets);
-*/
+
   mysqli_close($dbc);
 
 
+  function getScore($subset, $fileName, $rowType){
 
-  function equipment($subset){
-
-    $equipment = file("equipment.txt");
+    $file = file($fileName);
     //Remove special characters from equipment list
-    foreach ($equipment as $key => $value) {
-      $equipment[$key] = preg_replace('/[^A-Za-z0-9\-]/', '', $value);
+    foreach ($file as $key => $value) {
+      $file[$key] = preg_replace('/[^A-Za-z0-9\-]/', '', $value);
+    }
+    //If 'secondaryPart' then add None to options
+    if($rowType == 'secondaryPart'){
+      array_push($file, 'None');
     }
     //Initialise arrays
     $count = array();
     $days = array();
     $score = array();
-    foreach ($equipment as $equip) {
-      $count[$equip] = 0;
-      $days[$equip] = 0;
-      $score[$equip] = 0;
+    foreach ($file as $line) {
+      $count[$line] = 0;
+      $days[$line] = 0;
+      $score[$line] = 0;
     }
 
     //Add count for equipment and days.
     foreach ($subset as $row) {
       $daysAgo = $row['score'];
-      $type = $row['equipment'];
+      $type = $row[$rowType];
       $count[preg_replace('/[^A-Za-z0-9\-]/', '', $type)] += 1;
       $days[preg_replace('/[^A-Za-z0-9\-]/', '', $type)] += $daysAgo;
     }
 
     //Determine a score for each equip
-    $max = 0;
-    foreach ($equipment as $equip) {
-      if($count[$equip] != 0){
-        $score[$equip] = round($days[$equip] / $count[$equip] + $count[$equip]);
-        //Update max score
-        if($score[$equip] > $max){
-          $max = $score[$equip];
-        }
+    $max = 1;
+    foreach ($file as $line) {
+      if($count[$line] != 0){
+        $score[$line] = round($days[$line] / $count[$line]);
+      }
+      //Update max score
+      if($score[$line] > $max){
+        $max = $score[$line];
       }
     }
 
-    //Invert scores
-    foreach ($equipment as $equip) {
-        $score[$equip] = $max - $score[$equip];
+    //Make scores a weighting out of 1
+    foreach ($file as $line) {
+      if($count[$line] != 0){
+        $score[$line] = round($score[$line] / (2 * $max), 3);
+        if($score[$line] == 0 && $count[$line] < 4){
+          $score[$line] = 1 - $count[$line] * 0.05;
+        }
+      } else {
+        $score[$line] = 1;
+      }
     }
 
     return $score;
   }
 
   function bilateral($subset){
+
     //Initialise arrays
     $count = array('bilateral' => 0, 'unilateral' => 0 );
     $days = array('bilateral' => 0, 'unilateral' => 0 );
@@ -142,27 +157,56 @@ Decide exercises to recommend.
     foreach ($subset as $row) {
       $daysAgo = $row['score'];
       $bilateral = $row['bilateral'];
-      $count[$bilateral ? 'bilateral' : 'unilateral'] += 1;
-      $days[$bilateral ? 'bilateral' : 'unilateral'] += $daysAgo;
+      $count[$bilateral == 'YES' ? 'bilateral' : 'unilateral'] += 1;
+      $days[$bilateral == 'YES' ? 'bilateral' : 'unilateral'] += $daysAgo;
     }
 
     //Determine a score for each type
-    $max = 0;
+    $max = 1;
     foreach (array_keys($count) as $type) {
       if($count[$type] != 0){
-        $score[$type] = round($days[$type] / $count[$type] + $count[$type]);
-        //Update max score
-        if($score[$type] > $max){
-          $max = $score[$type];
-        }
+        $score[$type] = round($days[$type] / $count[$type], 3);
+      }
+      //Update max score
+      if($score[$type] > $max){
+        $max = $score[$type];
       }
     }
 
-    //Invert scores
+    //Make scores a weighting out of 1
     foreach (array_keys($count) as $type) {
-        $score[$type] = $max - $score[$type];
+      if($score[$type] != 0){
+        $score[$type] = round($score[$type] / (2 * $max));
+        if($score[$type] == 0 && $count[$type] < 4){
+          $score[$type] = 1 - $count[$type] * 0.05;
+        }
+      } else {
+        $score[$type] = 1;
+      }
     }
 
     return $score;
+  }
+
+  function cmp($a, $b){
+    if($a['score'] == $b['score']){
+      return 0;
+    }
+    return ($a['score'] > $b['score']) ? -1 : 1;
+  }
+
+  function val_sort($array, $key) {
+    print_r($array);
+  	foreach($array as $k=>$v) {
+  		$b[] = $v[$key];
+  	}
+    print_r($b);
+  	asort($b);
+
+  	foreach($b as $k=>$v) {
+  		$c[] = $array[$k];
+  	}
+
+  	return $c;
   }
  ?>
