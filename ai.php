@@ -27,7 +27,7 @@ Decide exercises to recommend.
     die("Error creating table. " . mysqli_error($dbc));
   }
 
-  $entries = mysqli_query($dbc, "SELECT * FROM $table ORDER BY lastDone ASC");
+  $entries = mysqli_query($dbc, "SELECT * FROM $table ORDER BY lastDone DESC");
   if(!$entries) {
     die("Error select all. " . mysqli_error($dbc));
   }
@@ -38,24 +38,51 @@ Decide exercises to recommend.
     die("Error select all. " . mysqli_error($dbc));
   }
 
-  //Order based on equipment used from last 7 days
-  $equipmentScore = equipment($sql);
+  //Create score and set to number of days since exercise done.
+  $exercises = array();
+  $now = new DateTime(date("Y-m-d H:i:s"));
+  while ($row = mysqli_fetch_assoc($entries)) {
+    $date = new DateTime($row['lastDone']);
+    $dif = $now->diff($date)->format('%a');
+    $row['score'] = $dif;
+    //Add exercises to array.
+    array_push($exercises, $row);
+  }
+
+  //Create subset for further scoring. Most recent 15 exercises.
+  $subset = array();
+  for ($i = 0; $i < 15; $i++) {
+    array_push($subset, $exercises[$i]);
+  }
+
+  //Create score for equipment based on subset of exercises.
+  $equipmentScore = equipment($subset);
   print_r($equipmentScore);
 
+/*
+  $dayBuckets = array();
+  $now = new DateTime(date("Y-m-d H:i:s"));
   //Print middle of table for recommended exercises
-  while ($row = mysqli_fetch_array($entries, MYSQLI_NUM)) {
+    while ($row = mysqli_fetch_assoc($entries)) {
+    $date = new DateTime($row['lastDone']);
+    $dif = $now->diff($date)->format('%d');
+    if(!array_key_exists($dif, $dayBuckets)){
+      $dayBuckets[$dif] = array();
+    }
+    array_push($dayBuckets[$dif], $row);
     echo "<tr>";
     for($i=0; $i<count($row)-1; $i++){
       echo "<td>" . $row[$i] . "</td>";
     }
     echo "</tr>";
   }
-
+  print_r($dayBuckets);
+*/
   mysqli_close($dbc);
 
 
 
-  function equipment($data){
+  function equipment($subset){
 
     $equipment = file("equipment.txt");
     //Remove special characters from equipment list
@@ -71,23 +98,32 @@ Decide exercises to recommend.
       $days[$equip] = 0;
       $score[$equip] = 0;
     }
-    //Current time
-    $now = new DateTime(date("Y-m-d H:i:s"));
 
-    //Find difference between now and each entry and count to arrays
-    while ($row = mysqli_fetch_assoc($data)) {
-      $date = new DateTime($row['lastDone']);
+    //Add count for equipment and days.
+    foreach ($subset as $row) {
+      $daysAgo = $row['score'];
       $type = $row['equipment'];
       $count[preg_replace('/[^A-Za-z0-9\-]/', '', $type)] += 1;
-      $days[preg_replace('/[^A-Za-z0-9\-]/', '', $type)] += $now->diff($date)->format('%d');
+      $days[preg_replace('/[^A-Za-z0-9\-]/', '', $type)] += $daysAgo;
     }
 
     //Determine a score for each equip
+    $max = 0;
     foreach ($equipment as $equip) {
       if($count[$equip] != 0){
         $score[$equip] = round($days[$equip] / $count[$equip] + $count[$equip]);
+        //Update max score
+        if($score[$equip] > $max){
+          $max = $score[$equip];
+        }
       }
     }
+
+    //Invert scores
+    foreach ($equipment as $equip) {
+        $score[$equip] = $max - $score[$equip];
+    }
+    
     return $score;
 
   }
