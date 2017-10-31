@@ -66,6 +66,10 @@ Form to add exercise to the database.
         </select>
       </p>
 
+      <p>Bilateral Exercise:
+        <input type="checkbox" name="bilateral"/>
+      </p>
+
       <p>
         <input type="submit" value="submit" name="submit" onclick="return checkEntry()"/>
         <input type="button" value="Back" onclick="window.location = 'index.php'" />

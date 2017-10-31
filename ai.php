@@ -20,7 +20,8 @@ Decide exercises to recommend.
     primaryPart TEXT,
     secondaryPart TEXT,
     equipment TEXT,
-    lastDone DATETIME)";
+    lastDone DATETIME,
+    bilateral TINYINT(1))";
   $result = mysqli_query($dbc, $createTable) ;
 
   if(!$result) {
@@ -123,7 +124,7 @@ Decide exercises to recommend.
     foreach ($equipment as $equip) {
         $score[$equip] = $max - $score[$equip];
     }
-    
+
     return $score;
 
   }

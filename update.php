@@ -60,7 +60,7 @@ Update when exercise was last done and persist in database.
             //Add all exercises to table
             while ($row = mysqli_fetch_array($entries, MYSQLI_NUM)) {
               echo "<tr><td class='centre'><input type='checkbox' name='check[]' value='$row[0]'/></td>";
-              for($i=0; $i<count($row)-1; $i++){
+              for($i=0; $i<count($row)-2; $i++){
                 echo "<td>" . $row[$i] . "</td>";
               }
               echo "</tr>";
