@@ -41,7 +41,7 @@ Update when exercise was last done and persist in database.
       <form action="process.php" method="post">
         <table border="1" id="exerciseTable">
           <tr>
-            <th>Select</th><th>Name</th><th>Primary</th><th>Secondary</th><th>Equipment</th>
+            <th>Select</th><th>Name</th><th>Primary</th><th>Secondary</th><th>Equipment</th><th>Bilateral</th>
           </tr>
 
           <?php
@@ -63,6 +63,7 @@ Update when exercise was last done and persist in database.
               for($i=0; $i<count($row)-2; $i++){
                 echo "<td>" . $row[$i] . "</td>";
               }
+              echo "<td>" . ($row[$i] ? 'YES' : 'NO') . "</td>";
               echo "</tr>";
             }
 
