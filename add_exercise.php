@@ -1,7 +1,7 @@
 <!--
 Form to add exercise to the database.
   Contains an submit and back button and has fields for adding exercis info.
-  Uses exercise-added.php, index.php, muscles.txt, equipment.txt
+  Uses exercise-added.php, home.php, muscles.txt, equipment.txt
 !-->
 <html>
 <head>
@@ -72,7 +72,7 @@ Form to add exercise to the database.
 
       <p>
         <input type="submit" value="submit" name="submit" onclick="return checkEntry()"/>
-        <input type="button" value="Back" onclick="window.location = 'index.php'" />
+        <input type="button" value="Back" onclick="window.location = 'home.php'" />
       </p>
 
     </form>

@@ -73,7 +73,7 @@ Update when exercise was last done and persist in database.
          </table>
 
          <input type="submit" value="Update" name="submit" />
-         <input type="button" value="Back" onclick="window.location = 'index.php'" />
+         <input type="button" value="Back" onclick="window.location = 'home.php'" />
       </form>
     </div>
   </div>

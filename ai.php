@@ -1,6 +1,6 @@
 <!--
 Decide exercises to recommend.
-  Embedded in a table in index.php
+  Embedded in a table in home.php
 !-->
 <?php
 

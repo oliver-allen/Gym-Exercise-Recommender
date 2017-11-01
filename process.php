@@ -1,6 +1,6 @@
 <!--
 Updates the lastDone for an exercise in the database.
-  Uses index.php
+  Uses home.php
 !-->
 <?php
 
@@ -33,9 +33,9 @@ if(isset($_POST['submit'])){
     for($i=1; $i<count($checked); $i++){
       $message = $message . ", $checked[$i]";
     }
-    //message to sent back to index.php
+    //message to sent back to home.php
     $message = $message . " was updated successfully";
-    echo "<script>window.location.href = 'index.php?status=$message';</script>";
+    echo "<script>window.location.href = 'home.php?status=$message';</script>";
 
   } else {
     echo "Nothing selected";

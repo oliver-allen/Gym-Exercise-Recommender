@@ -29,11 +29,11 @@ Add exercise to the database.
     }
     mysqli_close($dbc);
 
-    //Redirect to index.php and transfer status
+    //Redirect to home.php and transfer status
     if(empty($message)){
       $message = "Exercise $_name was added successfully";
     }
-    echo "<script>window.location.href = 'index.php?status=$message';</script>";
+    echo "<script>window.location.href = 'home.php?status=$message';</script>";
 
   } else {
     echo "Something wrong. Exercise added not through submit";
