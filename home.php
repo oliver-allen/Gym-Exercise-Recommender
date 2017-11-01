@@ -1,8 +1,17 @@
-<!--
+<?php
+/*<!--
 Homepage of application.
   Contains an add exercise and update button and shows a table of recommended exercises.
   Uses add_exercise.php, update.php and ai.php
-!-->
+!-->*/
+  if(isset($_COOKIE["status"])){
+    $status = $_COOKIE["status"];
+  } else {
+    $status = "";
+  }
+  setcookie( "status", "", time()-1);
+?>
+
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="style.css" />
@@ -11,8 +20,8 @@ Homepage of application.
     <script>
       function popup(){
         var status = "<?php
-          if(array_key_exists('status',$_GET)){
-          echo $_GET["status"];
+          if(isset($status)){
+          echo $status;
           }
         ?>";
         if(status != ""){

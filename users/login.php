@@ -1,8 +1,9 @@
 <?php
 /*<!--
-Signup and login a user using database.
-  Uses
+  Signup and login a user using database.
+  Uses home.php and access.php
 !-->*/
+
   //Database connection
   require '../mysql_connection.php';
   if (!$dbc) {
@@ -31,10 +32,10 @@ Signup and login a user using database.
 
     $insert = mysqli_query($dbc, $query);
     if(!$insert){
-      setcookie("status", $_username." already exists");
+      setcookie("access", $_username." already exists");
       echo "<script>window.location.href = 'access.php';</script>";
     } else {
-      unset($_COOKIE["status"]);
+      unset($_COOKIE["access"]);
       echo "<script>window.location.href = '../home.php';</script>";
     }
   }
@@ -48,10 +49,10 @@ Signup and login a user using database.
     $query = "SELECT * FROM $userTable WHERE username='$_username' AND password='$_password'";
     $entries = mysqli_query($dbc, $query);
     if(!$entries || (mysqli_num_rows($entries) != 1) ){
-      setcookie("status", "Username/Password is incorrect");
+      setcookie("access", "Username/Password is incorrect");
       echo "<script>window.location.href = 'access.php';</script>";
     } else {
-        unset($_COOKIE["status"]);
+        unset($_COOKIE["access"]);
         echo "<script>window.location.href = '../home.php';</script>";
     }
 

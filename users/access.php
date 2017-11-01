@@ -1,7 +1,10 @@
 <?php
-  if(isset($_COOKIE["status"])){
-    $status = $_COOKIE["status"];
+  if(isset($_COOKIE["access"])){
+    $accessStatus = $_COOKIE["access"];
+  } else {
+    $accessStatus = "";
   }
+  setcookie( "access", "", time()-1);
 ?>
 <!--
 Page to login or signup.
@@ -17,11 +20,13 @@ Page to login or signup.
     <script>
       function popup(){
         var status = "<?php
-          if(isset($status)){
-            echo $status;
+          if(isset($accessStatus)){
+            echo $accessStatus;
           }
         ?>";
-        alert(status);
+        if(status != ""){
+          alert(status);
+        }
       }
       function checkEntrySignup() {
         var dom = document.getElementsByClassName('requireSignup');

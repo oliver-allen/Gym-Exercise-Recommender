@@ -1,8 +1,8 @@
-<!--
+<?php
+/*<!--
 Add exercise to the database.
   Uses exercise-added.php, muscles.txt, equipment.txt
-!-->
-<?php
+!-->*/
   if(isset($_POST['submit'])){
 
     $_name = $_POST['name'];
@@ -33,7 +33,8 @@ Add exercise to the database.
     if(empty($message)){
       $message = "Exercise $_name was added successfully";
     }
-    echo "<script>window.location.href = 'home.php?status=$message';</script>";
+    setcookie("status", $message);
+    echo "<script>window.location.href = 'home.php';</script>";
 
   } else {
     echo "Something wrong. Exercise added not through submit";
