@@ -65,11 +65,11 @@ Decide exercises to recommend.
   //Apply the different type of scores to each exercise score value.
   foreach ($exercises as $key => $exercise) {
     $score = $exercise['score'];
-    $score += $bilateralScore[$exercise['bilateral'] == 'YES' ? 'bilateral' : 'unilateral'];
-    $score += $equipmentScore[$exercise['equipment']];
-    $score += $secondaryMuscleScore[$exercise['secondaryPart']];
-    $score += $primaryMuscleScore[$exercise['primaryPart']];
-    $exercise['score'] = $score;
+    $score += 0.1*($bilateralScore[$exercise['bilateral'] == 'YES' ? 'bilateral' : 'unilateral']);
+    $score += 0.2*($equipmentScore[$exercise['equipment']]);
+    $score += 0.3*($secondaryMuscleScore[$exercise['secondaryPart']]);
+    $score += 0.4*($primaryMuscleScore[$exercise['primaryPart']]);
+    $exercise['score'] = round($score, 3);
     $exercises[$key] = $exercise;
   }
   //Sort exercises by score biggest to smallest

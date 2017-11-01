@@ -6,7 +6,7 @@ Form to add exercise to the database.
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="style.css" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Popup is exercise info is not valid! -->
     <script>
       function checkEntry() {
