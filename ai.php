@@ -49,7 +49,8 @@ Decide exercises to recommend.
 
   //Create subset for further scoring. Most recent 15 exercises.
   $subset = array();
-  for ($i = 0; $i < 15; $i++) {
+  $num = count($exercises) < 15 ? count($exercises) : 15;
+  for ($i = 0; $i < $num; $i++) {
     array_push($subset, $exercises[$i]);
   }
 
