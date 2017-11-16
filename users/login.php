@@ -6,20 +6,16 @@
 
   //Database connection
   require '../mysql_connection.php';
-  if (!$dbc) {
-    die("Connection failed: " . mysqli_connect_error());
-  }
 
+  connectToUsers();
   //Create table if doesn't exist
   $createTable="CREATE TABLE IF NOT EXISTS $userTable (
     username VARCHAR(50) primary key not null,
     password VARCHAR(50) not null
   )";
-  $result = mysqli_query($dbc, $createTable) ;
+  $result = mysqli_query($dbc, $createTable)
+  OR die("Error creating table. " . mysqli_error($dbc));
 
-  if(!$result) {
-    die("Error creating table. " . mysqli_error($dbc));
-  }
 
   //If signup button was clicked
   if(isset($_POST['signup'])){
@@ -36,6 +32,8 @@
       echo "<script>window.location.href = 'access.php';</script>";
     } else {
       unset($_COOKIE["access"]);
+      setcookie("user", $_username);
+      createExercisesForUser($_username);
       echo "<script>window.location.href = '../home.php';</script>";
     }
   }
@@ -53,8 +51,23 @@
       echo "<script>window.location.href = 'access.php';</script>";
     } else {
         unset($_COOKIE["access"]);
+        setcookie("user", $_username);
         echo "<script>window.location.href = '../home.php';</script>";
     }
 
+  }
+
+  function createExercisesForUser($user){
+    //Create table for user
+    connectToExercises();
+    $createTable="CREATE TABLE IF NOT EXISTS $user (
+      name VARCHAR(50) primary key not null,
+      primaryPart TEXT,
+      secondaryPart TEXT,
+      equipment TEXT,
+      bilateral TINYINT(1),
+      lastDone DATETIME )";
+    $result = mysqli_query($GLOBALS['dbc'], $createTable)
+    OR die("Error creating table. " . mysqli_error($GLOBALS['dbc']));
   }
 ?>

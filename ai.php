@@ -12,28 +12,13 @@ Decide exercises to recommend.
 
   //Database connection
   require 'mysql_connection.php';
-  if (!$dbc) {
-    die("Connection failed: " . mysqli_connect_error());
-  }
 
-  //Create table if doesn't exist
-  $createTable="CREATE TABLE IF NOT EXISTS $table (
-    name VARCHAR(50) primary key not null,
-    primaryPart TEXT,
-    secondaryPart TEXT,
-    equipment TEXT,
-    bilateral TINYINT(1),
-    lastDone DATETIME )";
-  $result = mysqli_query($dbc, $createTable) ;
+  connectToExercises();
+  $user = $_COOKIE["user"];
+  echo "cookie is ".$user;
+  $entries = mysqli_query($dbc, "SELECT * FROM $user ORDER BY lastDone DESC")
+  OR die("Error select all. " . mysqli_error($dbc));
 
-  if(!$result) {
-    die("Error creating table. " . mysqli_error($dbc));
-  }
-
-  $entries = mysqli_query($dbc, "SELECT * FROM $table ORDER BY lastDone DESC");
-  if(!$entries) {
-    die("Error select all. " . mysqli_error($dbc));
-  }
 
   //Create score and set to number of days since exercise done.
   $exercises = array();
@@ -87,8 +72,6 @@ Decide exercises to recommend.
     echo "<td>" . $values[$i+1] . "</td>";
     echo "</tr>";
   }
-
-  mysqli_close($dbc);
 
 
   function getScore($subset, $fileName, $rowType){

@@ -8,8 +8,8 @@
 ?>
 <!--
 Page to login or signup.
-  Contains an signup and login buttons and has fields for username and password.
-  Uses signup.php and login.php
+  Contains a signup and login buttons and has fields for username and password.
+  Uses and login.php
 !-->
 
 <html>
