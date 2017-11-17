@@ -1,9 +1,8 @@
 <?php
-/*<!--
+/*
 Updates the lastDone for an exercise in the database.
   Uses home.php
-!-->*/
-
+*/
 session_start();
 
 if(isset($_POST['submit'])){
@@ -35,9 +34,9 @@ if(isset($_POST['submit'])){
     $message = $message . " was updated successfully";
     setcookie("status", $message);
     echo "<script>window.location.href = 'home.php';</script>";
-
-  } else {
-    echo "Nothing selected";
   }
+
+} else {
+  echo "<script>window.location.href = 'home.php';</script>";
 }
  ?>

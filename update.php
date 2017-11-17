@@ -1,9 +1,9 @@
 <?php
-/*<!--
+/*
 Update when exercise was last done and persist in database.
   Contains an submit and back button and has list of exercises with tickbox.
   Uses process.php, index.php
-!-->*/
+*/
 session_start();
 ?>
 
@@ -53,21 +53,26 @@ session_start();
             require 'mysql_connection.php';
             connectToExercises();
 
-            //Database get all exercises query
-            $user = $_SESSION["user"];
-            $entries = mysqli_query($dbc, "SELECT * FROM $user")
-            OR die("Error select all. " . mysqli_error($dbc));
+            //Redirect if not logged in
+            if(!isset($_SESSION["user"])){
+              echo "<script>window.location.href = 'users/access.php';</script>";
+            } else {
+            
+              //Database get all exercises query
+              $user = $_SESSION["user"];
+              $entries = mysqli_query($dbc, "SELECT * FROM $user")
+              OR die("Error select all. " . mysqli_error($dbc));
 
-            //Add all exercises to table
-            while ($row = mysqli_fetch_array($entries, MYSQLI_NUM)) {
-              echo "<tr><td class='centre'><input type='checkbox' name='check[]' value='$row[0]'/></td>";
-              for($i=0; $i<count($row)-2; $i++){
-                echo "<td>" . $row[$i] . "</td>";
+              //Add all exercises to table
+              while ($row = mysqli_fetch_array($entries, MYSQLI_NUM)) {
+                echo "<tr><td class='centre'><input type='checkbox' name='check[]' value='$row[0]'/></td>";
+                for($i=0; $i<count($row)-2; $i++){
+                  echo "<td>" . $row[$i] . "</td>";
+                }
+                echo "<td>" . ($row[$i] ? 'YES' : 'NO') . "</td>";
+                echo "</tr>";
               }
-              echo "<td>" . ($row[$i] ? 'YES' : 'NO') . "</td>";
-              echo "</tr>";
             }
-
            ?>
 
          </table>

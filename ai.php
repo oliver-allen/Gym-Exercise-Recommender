@@ -1,8 +1,7 @@
-<!--
-Decide exercises to recommend.
-  Embedded in a table in home.php
-!-->
 <?php
+/*Decide exercises to recommend.
+  Embedded in a table in home.php
+  */
 
   //Score last done desending based on day only.
   //Score bilateral by formula using days / count
@@ -14,62 +13,68 @@ Decide exercises to recommend.
   require 'mysql_connection.php';
 
   connectToExercises();
-  $user = $_SESSION["user"];
-  $entries = mysqli_query($dbc, "SELECT * FROM $user ORDER BY lastDone DESC")
-  OR die("Error select all. " . mysqli_error($dbc));
+  //Redirect if not logged in
+  if(!isset($_SESSION["user"])){
+    echo "<script>window.location.href = 'users/access.php';</script>";
+  } else{
+    
+    $user = $_SESSION["user"];
+    $entries = mysqli_query($dbc, "SELECT * FROM $user ORDER BY lastDone DESC")
+    OR die("Error select all. " . mysqli_error($dbc));
 
 
-  //Create score and set to number of days since exercise done.
-  $exercises = array();
-  $now = new DateTime(date("Y-m-d H:i:s"));
-  while ($row = mysqli_fetch_assoc($entries)) {
-    $date = new DateTime($row['lastDone']);
-    $dif = $now->diff($date)->format('%a');
-    $row['score'] = $dif;
-    $row['bilateral'] = $row['bilateral'] ? 'YES' : 'NO';
-    //Add exercises to array.
-    array_push($exercises, $row);
-  }
-
-  //Create subset for further scoring. Most recent 15 exercises.
-  $subset = array();
-  $num = count($exercises) < 15 ? count($exercises) : 15;
-  for ($i = 0; $i < $num; $i++) {
-    array_push($subset, $exercises[$i]);
-  }
-
-  //Create score for equipment based on subset of exercises.
-  $equipmentScore = getScore($subset, "equipment.txt", 'equipment');
-  //Create score for primary muscles based on subset of exercises.
-  $primaryMuscleScore = getScore($subset, "muscles.txt", 'primaryPart');
-  //Create score for primary muscles based on subset of exercises.
-  $secondaryMuscleScore = getScore($subset, "muscles.txt", 'secondaryPart');
-  //Create score for bilateral based on subset of exercises
-  $bilateralScore = bilateral($subset);
-
-  //Apply the different type of scores to each exercise score value.
-  foreach ($exercises as $key => $exercise) {
-    $score = $exercise['score'];
-    $score += 0.1*($bilateralScore[$exercise['bilateral'] == 'YES' ? 'bilateral' : 'unilateral']);
-    $score += 0.2*($equipmentScore[$exercise['equipment']]);
-    $score += 0.3*($secondaryMuscleScore[$exercise['secondaryPart']]);
-    $score += 0.4*($primaryMuscleScore[$exercise['primaryPart']]);
-    $exercise['score'] = round($score, 3);
-    $exercises[$key] = $exercise;
-  }
-  //Sort exercises by score biggest to smallest
-  usort($exercises, "cmp");
-
-  //Print middle of table for recommended exercises
-  foreach ($exercises as $exercise) {
-    $values = array_values($exercise);
-    echo "<tr>";
-    for($i=0; $i<count($values)-2; $i++){
-      echo "<td>" . $values[$i] . "</td>";
+    //Create score and set to number of days since exercise done.
+    $exercises = array();
+    $now = new DateTime(date("Y-m-d H:i:s"));
+    while ($row = mysqli_fetch_assoc($entries)) {
+      $date = new DateTime($row['lastDone']);
+      $dif = $now->diff($date)->format('%a');
+      $row['score'] = $dif;
+      $row['bilateral'] = $row['bilateral'] ? 'YES' : 'NO';
+      //Add exercises to array.
+      array_push($exercises, $row);
     }
-    //Add score column
-    echo "<td>" . $values[$i+1] . "</td>";
-    echo "</tr>";
+
+    //Create subset for further scoring. Most recent 15 exercises.
+    $subset = array();
+    $num = count($exercises) < 15 ? count($exercises) : 15;
+    for ($i = 0; $i < $num; $i++) {
+      array_push($subset, $exercises[$i]);
+    }
+
+    //Create score for equipment based on subset of exercises.
+    $equipmentScore = getScore($subset, "equipment.txt", 'equipment');
+    //Create score for primary muscles based on subset of exercises.
+    $primaryMuscleScore = getScore($subset, "muscles.txt", 'primaryPart');
+    //Create score for primary muscles based on subset of exercises.
+    $secondaryMuscleScore = getScore($subset, "muscles.txt", 'secondaryPart');
+    //Create score for bilateral based on subset of exercises
+    $bilateralScore = bilateral($subset);
+
+    //Apply the different type of scores to each exercise score value.
+    foreach ($exercises as $key => $exercise) {
+      $score = $exercise['score'];
+      $score += 0.1*($bilateralScore[$exercise['bilateral'] == 'YES' ? 'bilateral' : 'unilateral']);
+      $score += 0.2*($equipmentScore[$exercise['equipment']]);
+      $score += 0.3*($secondaryMuscleScore[$exercise['secondaryPart']]);
+      $score += 0.4*($primaryMuscleScore[$exercise['primaryPart']]);
+      $exercise['score'] = round($score, 3);
+      $exercises[$key] = $exercise;
+    }
+    //Sort exercises by score biggest to smallest
+    usort($exercises, "cmp");
+
+    //Print middle of table for recommended exercises
+    foreach ($exercises as $exercise) {
+      $values = array_values($exercise);
+      echo "<tr>";
+      for($i=0; $i<count($values)-2; $i++){
+        echo "<td>" . $values[$i] . "</td>";
+      }
+      //Add score column
+      echo "<td>" . $values[$i+1] . "</td>";
+      echo "</tr>";
+    }
   }
 
 

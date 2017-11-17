@@ -1,10 +1,9 @@
 <?php
-/*<!--
+/*
 Add exercise to the database.
   Uses exercise-added.php, muscles.txt, equipment.txt
-!-->*/
-
-  session_start();
+*/
+session_start();
 
   if(isset($_POST['submit'])){
 
@@ -37,6 +36,7 @@ Add exercise to the database.
     echo "<script>window.location.href = 'home.php';</script>";
 
   } else {
-    echo "Something wrong. Exercise added not through submit";
+    //Redirect
+    echo "<script>window.location.href = 'home.php';</script>";
   }
 ?>

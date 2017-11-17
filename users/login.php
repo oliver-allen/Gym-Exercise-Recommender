@@ -1,8 +1,8 @@
 <?php
-/*<!--
+/*
   Signup and login a user using database.
   Uses home.php and access.php
-!-->*/
+*/
 
   session_start();
 
@@ -58,6 +58,8 @@
     }
 
   }
+  //Redirect if neither login or signup pressed
+  echo "<script>window.location.href = 'access.php';</script>";
 
   function createExercisesForUser($user){
     //Create table for user

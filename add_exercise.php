@@ -1,8 +1,16 @@
-<!--
-Form to add exercise to the database.
+<?php
+/*Form to add exercise to the database.
   Contains an submit and back button and has fields for adding exercis info.
   Uses exercise-added.php, home.php, muscles.txt, equipment.txt
-!-->
+*/
+
+//Check logged in
+session_start();
+if(!isset($_SESSION["user"])){
+    echo "<script>window.location.href = 'users/access.php';</script>";
+}
+?>
+
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="style.css" />

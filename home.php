@@ -1,11 +1,10 @@
 <?php
-/*<!--
+/*
 Homepage of application.
   Contains an add exercise and update button and shows a table of recommended exercises.
   Uses add_exercise.php, update.php and ai.php
-!-->*/
-
-  session_start();
+*/
+session_start();
 
   if(isset($_COOKIE["status"])){
     $status = $_COOKIE["status"];
@@ -40,6 +39,7 @@ Homepage of application.
     <div id="buttons">
       <input type="button" value="Add Excercise" onclick="window.location = 'add_exercise.php'" />
       <input type="button" value="Update Excercise" onclick="window.location = 'update.php'" />
+      <input type="button" value="Sign out" onclick="window.location = 'users/signout.php'" />
     </div>
     <div class="results">
       <table border="1" id="resultTable">

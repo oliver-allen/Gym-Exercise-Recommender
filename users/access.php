@@ -1,4 +1,8 @@
 <?php
+/*Page to login or signup.
+  Contains a signup and login buttons and has fields for username and password.
+  Uses and login.php*/
+  
   if(isset($_COOKIE["access"])){
     $accessStatus = $_COOKIE["access"];
   } else {
@@ -6,11 +10,6 @@
   }
   setcookie( "access", "", time()-1);
 ?>
-<!--
-Page to login or signup.
-  Contains a signup and login buttons and has fields for username and password.
-  Uses and login.php
-!-->
 
 <html>
 <head>
