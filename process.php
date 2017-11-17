@@ -12,7 +12,6 @@ if(isset($_POST['submit'])){
 
     //Database connection
     require 'mysql_connection.php';
-    connectToExercises();
 
     //List of exercises to update
     $names = "name='$checked[0]'";
