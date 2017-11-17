@@ -51,13 +51,12 @@ session_start();
           <?php
           //Database connection
             require 'mysql_connection.php';
-            connectToExercises();
 
             //Redirect if not logged in
             if(!isset($_SESSION["user"])){
               echo "<script>window.location.href = 'users/access.php';</script>";
             } else {
-            
+
               //Database get all exercises query
               $user = $_SESSION["user"];
               $entries = mysqli_query($dbc, "SELECT * FROM $user")

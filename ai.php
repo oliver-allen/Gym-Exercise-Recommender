@@ -12,12 +12,11 @@
   //Database connection
   require 'mysql_connection.php';
 
-  connectToExercises();
   //Redirect if not logged in
   if(!isset($_SESSION["user"])){
     echo "<script>window.location.href = 'users/access.php';</script>";
   } else{
-    
+
     $user = $_SESSION["user"];
     $entries = mysqli_query($dbc, "SELECT * FROM $user ORDER BY lastDone DESC")
     OR die("Error select all. " . mysqli_error($dbc));

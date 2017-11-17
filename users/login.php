@@ -9,7 +9,6 @@
   //Database connection
   require '../mysql_connection.php';
 
-  connectToUsers();
   //Create table if doesn't exist
   $createTable="CREATE TABLE IF NOT EXISTS $userTable (
     username VARCHAR(50) primary key not null,
@@ -35,7 +34,7 @@
     } else {
       unset($_COOKIE["access"]);
       $_SESSION["user"] = $_username;
-      createExercisesForUser($_username);
+      createExercisesForUser($_username, $dbc);
       echo "<script>window.location.href = '../home.php';</script>";
     }
   }
@@ -61,9 +60,8 @@
   //Redirect if neither login or signup pressed
   echo "<script>window.location.href = 'access.php';</script>";
 
-  function createExercisesForUser($user){
+  function createExercisesForUser($user, $dbc){
     //Create table for user
-    connectToExercises();
     $createTable="CREATE TABLE IF NOT EXISTS $user (
       name VARCHAR(50) primary key not null,
       primaryPart TEXT,
@@ -71,7 +69,7 @@
       equipment TEXT,
       bilateral TINYINT(1),
       lastDone DATETIME )";
-    $result = mysqli_query($GLOBALS['dbc'], $createTable)
-    OR die("Error creating table. " . mysqli_error($GLOBALS['dbc']));
+    $result = mysqli_query($dbc, $createTable)
+    OR die("Error creating table. " . mysqli_error($dbc));
   }
 ?>

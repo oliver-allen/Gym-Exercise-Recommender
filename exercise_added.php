@@ -16,7 +16,6 @@ session_start();
 
     //Database connection
     require 'mysql_connection.php';
-    connectToExercises();
 
     //Database insert query
     $user = $_SESSION["user"];
