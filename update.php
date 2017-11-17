@@ -1,8 +1,12 @@
-<!--
+<?php
+/*<!--
 Update when exercise was last done and persist in database.
   Contains an submit and back button and has list of exercises with tickbox.
   Uses process.php, index.php
-!-->
+!-->*/
+session_start();
+?>
+
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="style.css" />
@@ -47,15 +51,12 @@ Update when exercise was last done and persist in database.
           <?php
           //Database connection
             require 'mysql_connection.php';
-            if (!$dbc) {
-              die("Connection failed: " . mysqli_connect_error());
-            }
+            connectToExercises();
 
             //Database get all exercises query
-            $entries = mysqli_query($dbc, "SELECT * FROM $table");
-            if(!$entries) {
-              die("Error select all. " . mysqli_error($dbc));
-            }
+            $user = $_SESSION["user"];
+            $entries = mysqli_query($dbc, "SELECT * FROM $user")
+            OR die("Error select all. " . mysqli_error($dbc));
 
             //Add all exercises to table
             while ($row = mysqli_fetch_array($entries, MYSQLI_NUM)) {
@@ -67,7 +68,6 @@ Update when exercise was last done and persist in database.
               echo "</tr>";
             }
 
-            mysqli_close($dbc);
            ?>
 
          </table>

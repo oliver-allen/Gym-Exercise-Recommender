@@ -14,8 +14,7 @@ Decide exercises to recommend.
   require 'mysql_connection.php';
 
   connectToExercises();
-  $user = $_COOKIE["user"];
-  echo "cookie is ".$user;
+  $user = $_SESSION["user"];
   $entries = mysqli_query($dbc, "SELECT * FROM $user ORDER BY lastDone DESC")
   OR die("Error select all. " . mysqli_error($dbc));
 

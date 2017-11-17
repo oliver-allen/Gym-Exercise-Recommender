@@ -3,6 +3,9 @@
 Updates the lastDone for an exercise in the database.
   Uses home.php
 !-->*/
+
+session_start();
+
 if(isset($_POST['submit'])){
 
   if(array_key_exists('check',$_POST)){
@@ -10,9 +13,7 @@ if(isset($_POST['submit'])){
 
     //Database connection
     require 'mysql_connection.php';
-    if (!$dbc) {
-      die("Connection failed: " . mysqli_connect_error());
-    }
+    connectToExercises();
 
     //List of exercises to update
     $names = "name='$checked[0]'";
@@ -21,11 +22,9 @@ if(isset($_POST['submit'])){
     }
 
     //Update database
-    $update = mysqli_query($dbc, "UPDATE $table SET lastDone=NOW() WHERE $names");
-    if(!$update) {
-      die("Error select all. " . mysqli_error($dbc));
-    }
-    mysqli_close($dbc);
+    $user = $_SESSION["user"];
+    $update = mysqli_query($dbc, "UPDATE $user SET lastDone=NOW() WHERE $names")
+    OR die("Error select all. " . mysqli_error($dbc));
 
     //Get names of exercies to update.
     $message = "$checked[0]";

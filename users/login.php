@@ -4,6 +4,8 @@
   Uses home.php and access.php
 !-->*/
 
+  session_start();
+
   //Database connection
   require '../mysql_connection.php';
 
@@ -32,7 +34,7 @@
       echo "<script>window.location.href = 'access.php';</script>";
     } else {
       unset($_COOKIE["access"]);
-      setcookie("user", $_username);
+      $_SESSION["user"] = $_username;
       createExercisesForUser($_username);
       echo "<script>window.location.href = '../home.php';</script>";
     }
@@ -51,7 +53,7 @@
       echo "<script>window.location.href = 'access.php';</script>";
     } else {
         unset($_COOKIE["access"]);
-        setcookie("user", $_username);
+        $_SESSION["user"] = $_username;
         echo "<script>window.location.href = '../home.php';</script>";
     }
 

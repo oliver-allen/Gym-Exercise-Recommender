@@ -3,6 +3,9 @@
 Add exercise to the database.
   Uses exercise-added.php, muscles.txt, equipment.txt
 !-->*/
+
+  session_start();
+
   if(isset($_POST['submit'])){
 
     $_name = $_POST['name'];
@@ -14,20 +17,17 @@ Add exercise to the database.
 
     //Database connection
     require 'mysql_connection.php';
-    if (!$dbc) {
-      die("Connection failed: " . mysqli_connect_error());
-    }
+    connectToExercises();
 
     //Database insert query
-    $query = "INSERT INTO $table (name, primaryPart, secondaryPart, equipment, lastDone, bilateral)
+    $user = $_SESSION["user"];
+    $query = "INSERT INTO $user (name, primaryPart, secondaryPart, equipment, lastDone, bilateral)
     VALUES ('$_name', '$_primary', '$_secondary', '$_equipment', NOW(), '$_bilateral')";
 
     $insert = mysqli_query($dbc, $query);
     if(!$insert){
       $message = $_name . " already exists";
-      //die("Error inserting to database. " . mysqli_error($dbc));
     }
-    mysqli_close($dbc);
 
     //Redirect to home.php and transfer status
     if(empty($message)){

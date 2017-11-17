@@ -4,6 +4,9 @@ Homepage of application.
   Contains an add exercise and update button and shows a table of recommended exercises.
   Uses add_exercise.php, update.php and ai.php
 !-->*/
+
+  session_start();
+
   if(isset($_COOKIE["status"])){
     $status = $_COOKIE["status"];
   } else {
